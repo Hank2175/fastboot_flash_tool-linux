@@ -3,7 +3,10 @@
 
 flashNoraml()
 {
+<<<<<<< HEAD
+=======
 	adb -s $1 reboot bootloader
+>>>>>>> 7e6324ba1bcbeeff0e19ef5c4e9ad495f68b01d9
 	sleep 5
 	echo "Prepare to flash image for fastboot mode"
 	fastboot -s $1 erase devinfo
@@ -43,7 +46,10 @@ flashNoraml()
 
 flashABpart()
 {
+<<<<<<< HEAD
+=======
 	adb -s $1 reboot bootloader
+>>>>>>> 7e6324ba1bcbeeff0e19ef5c4e9ad495f68b01d9
 	sleep 5
 	echo "Prepare to flash image for fastboot -s $1 mode"
 	fastboot -s $1 devices
@@ -84,7 +90,10 @@ flashABpart()
 
 flashAOSP()
 {
+<<<<<<< HEAD
+=======
 	adb -s $1 reboot bootloader
+>>>>>>> 7e6324ba1bcbeeff0e19ef5c4e9ad495f68b01d9
 	sleep 5
 	echo "fastboot flashing GSI img"
 	fastboot -s $1 erase userdata
@@ -113,7 +122,10 @@ if [[ "$(ls)" == *"super_empty.img"* ]]; then
 	echo "AOSP"
 	mode=false
 else
+<<<<<<< HEAD
+=======
 	echo "Normal flash"
+>>>>>>> 7e6324ba1bcbeeff0e19ef5c4e9ad495f68b01d9
 	if [[ "$(ls)" == *"vbmeta_system.img"* ]]; then
 		ABpart=true
 	else
@@ -127,10 +139,44 @@ serialNum=()
 serialNum+=("$(echo $(adb devices) | cut -d" " -f 5)")
 serialNum+=("$(echo $(adb devices) | cut -d" " -f 7)")
 serialNum+=("$(echo $(adb devices) | cut -d" " -f 9)")
+<<<<<<< HEAD
+serialNum+=("$(echo $(adb devices) | cut -d" " -f 11)")
+
+for num in `seq 0 3`
+do
+{
+	if [ "${serialNum[num]}" != "" ] ; then
+		adb -s ${serialNum[num]} reboot bootloader
+	fi
+} &
+done
+wait
+unset serailNum
+echo "Waitting device reboot for 10 second!!!"
+sleep 5
+echo "Waitting device reboot for 5 second!!!"
+sleep 5
+
+
+
+serialNum=()
+if [ "$(echo $(adb devices) | cut -d" " -f 5)" == ""  ] ; then
+        echo "Trying to search fastboot devices!!!"
+	serialNum+=("$(echo $(fastboot devices) | cut -d" " -f 1)")
+	serialNum+=("$(echo $(fastboot devices) | cut -d" " -f 3)")
+	serialNum+=("$(echo $(fastboot devices) | cut -d" " -f 5)")
+	serialNum+=("$(echo $(fastboot devices) | cut -d" " -f 7)")
+fi
+
+a=$(date +%H:%M:%S)
+
+for num in `seq 0 3`
+=======
 
 a=$(date +%H%M%S)
 
 for num in `seq 0 2`
+>>>>>>> 7e6324ba1bcbeeff0e19ef5c4e9ad495f68b01d9
 do
 {
 	if [ "${serialNum[num]}" != "" ] ; then
@@ -154,7 +200,11 @@ done
 
 wait
 
+<<<<<<< HEAD
+b=$(date +%H:%M:%S)
+=======
 b=$(date +%H%M%S)
+>>>>>>> 7e6324ba1bcbeeff0e19ef5c4e9ad495f68b01d9
 
 echo -e "Start:\t$a"
 echo -e "End:\t$b"
