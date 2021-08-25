@@ -3,10 +3,6 @@
 
 flashNoraml()
 {
-<<<<<<< HEAD
-=======
-	adb -s $1 reboot bootloader
->>>>>>> 7e6324ba1bcbeeff0e19ef5c4e9ad495f68b01d9
 	sleep 5
 	echo "Prepare to flash image for fastboot mode"
 	fastboot -s $1 erase devinfo
@@ -46,10 +42,6 @@ flashNoraml()
 
 flashABpart()
 {
-<<<<<<< HEAD
-=======
-	adb -s $1 reboot bootloader
->>>>>>> 7e6324ba1bcbeeff0e19ef5c4e9ad495f68b01d9
 	sleep 5
 	echo "Prepare to flash image for fastboot -s $1 mode"
 	fastboot -s $1 devices
@@ -90,10 +82,6 @@ flashABpart()
 
 flashAOSP()
 {
-<<<<<<< HEAD
-=======
-	adb -s $1 reboot bootloader
->>>>>>> 7e6324ba1bcbeeff0e19ef5c4e9ad495f68b01d9
 	sleep 5
 	echo "fastboot flashing GSI img"
 	fastboot -s $1 erase userdata
@@ -118,14 +106,36 @@ flashAOSP()
 # Main function body
 ###
 cd $1
+
+_Model=0
+until [ $_Model -le 4 ] && [ $_Model -ge 1 ]
+do
+	echo "Please select device to flash!!!"
+	echo "1. Hera_Pro"
+	echo "2. Chiron_Pro"
+	echo "3. Triton"
+	echo "4. Surfing_Pro"	
+	read _Model
+done
+
+
+
+Device=""
+if [[ $_Model -eq 1 ]] ; then
+	Device="N672"
+elif [[ $_Model -eq 2 ]] ; then
+	Device="N635"
+elif [[ $_Model -eq 3 ]] ; then
+	Device="PRO 8475"
+elif [[ $_Model -eq 4 ]] ; then
+	Device="N630"
+fi
+
 if [[ "$(ls)" == *"super_empty.img"* ]]; then
 	echo "AOSP"
 	mode=false
 else
-<<<<<<< HEAD
-=======
 	echo "Normal flash"
->>>>>>> 7e6324ba1bcbeeff0e19ef5c4e9ad495f68b01d9
 	if [[ "$(ls)" == *"vbmeta_system.img"* ]]; then
 		ABpart=true
 	else
@@ -139,18 +149,23 @@ serialNum=()
 serialNum+=("$(echo $(adb devices) | cut -d" " -f 5)")
 serialNum+=("$(echo $(adb devices) | cut -d" " -f 7)")
 serialNum+=("$(echo $(adb devices) | cut -d" " -f 9)")
-<<<<<<< HEAD
 serialNum+=("$(echo $(adb devices) | cut -d" " -f 11)")
 
 for num in `seq 0 3`
 do
 {
 	if [ "${serialNum[num]}" != "" ] ; then
-		adb -s ${serialNum[num]} reboot bootloader
+		if [[ "$(adb -s ${serialNum[num]} shell getprop ro.product.model)" == *"$Device"* ]]; then
+			echo "[${serialNum[num]}] is right device to flash!!!"
+			adb -s ${serialNum[num]} reboot bootloaderi
+		else
+			echo "[${serialNum[num]}] is not support to flash!!!"
+		fi
 	fi
 } &
 done
 wait
+
 unset serailNum
 echo "Waitting device reboot for 10 second!!!"
 sleep 5
@@ -160,23 +175,16 @@ sleep 5
 
 
 serialNum=()
-if [ "$(echo $(adb devices) | cut -d" " -f 5)" == ""  ] ; then
-        echo "Trying to search fastboot devices!!!"
-	serialNum+=("$(echo $(fastboot devices) | cut -d" " -f 1)")
-	serialNum+=("$(echo $(fastboot devices) | cut -d" " -f 3)")
-	serialNum+=("$(echo $(fastboot devices) | cut -d" " -f 5)")
-	serialNum+=("$(echo $(fastboot devices) | cut -d" " -f 7)")
-fi
+
+echo "Trying to search fastboot devices!!!"
+serialNum+=("$(echo $(fastboot devices) | cut -d" " -f 1)")
+serialNum+=("$(echo $(fastboot devices) | cut -d" " -f 3)")
+serialNum+=("$(echo $(fastboot devices) | cut -d" " -f 5)")
+serialNum+=("$(echo $(fastboot devices) | cut -d" " -f 7)")
 
 a=$(date +%H:%M:%S)
 
 for num in `seq 0 3`
-=======
-
-a=$(date +%H%M%S)
-
-for num in `seq 0 2`
->>>>>>> 7e6324ba1bcbeeff0e19ef5c4e9ad495f68b01d9
 do
 {
 	if [ "${serialNum[num]}" != "" ] ; then
@@ -197,14 +205,9 @@ do
 	fi
 } &
 done
-
 wait
 
-<<<<<<< HEAD
 b=$(date +%H:%M:%S)
-=======
-b=$(date +%H%M%S)
->>>>>>> 7e6324ba1bcbeeff0e19ef5c4e9ad495f68b01d9
 
 echo -e "Start:\t$a"
 echo -e "End:\t$b"
